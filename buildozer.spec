@@ -12,3 +12,5 @@ android.permissions = INTERNET,ACCESS_NETWORK_STATE
 android.api = 33
 android.minapi = 21
 android.arch = arm64-v8a
+android.sdk_path = /home/runner/android-sdk
+android.ndk_path = /home/runner/android-ndk
