@@ -50,17 +50,17 @@ jobs:
       - name: Build APK
         run: |
           export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/tools/bin
-          buildozer android debug 2>&1 | tee build.log
-        continue-on-error: true
-      
-      - name: Check build log
-        run: |
-          tail -n 100 build.log || true
-          ls -la bin/ || true
+          buildozer android debug
+          echo "=== APK SEARCH ==="
+          find . -name "*.apk" -type f 2>/dev/null
+          ls -la bin/ 2>/dev/null || echo "bin folder not found"
+          find $HOME/.buildozer -name "*.apk" 2>/dev/null || echo "no apk in buildozer"
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: apk
-          path: bin/*.apk
+          path: |
+            bin/*.apk
+            **/*.apk
