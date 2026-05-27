@@ -21,8 +21,10 @@ jobs:
           pip3 install --user buildozer cython
       
       - name: Build APK
+        env:
+          PATH: ${{ github.workspace }}/.local/bin:/usr/local/bin:/usr/bin:/bin
         run: |
-          export PATH=$PATH:~/.local/bin
+          export PATH="$HOME/.local/bin:$PATH"
           buildozer -v android debug
       
       - name: Upload APK
