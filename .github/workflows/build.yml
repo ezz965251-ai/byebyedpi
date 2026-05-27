@@ -9,19 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       
-      - name: Install dependencies
+      - name: Install and Build
         run: |
           sudo apt update
           sudo apt install -y python3-pip python3-venv git zip unzip openjdk-17-jdk
           pip3 install buildozer cython
-      
-      - name: Build APK
-        run: |
+          export PATH="$HOME/.local/bin:$PATH"
           buildozer -v android debug
       
       - name: Upload APK
