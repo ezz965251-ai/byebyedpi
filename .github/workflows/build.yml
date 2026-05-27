@@ -1,6 +1,10 @@
+# .github/workflows/build.yml - для автоматической сборки APK (скопируйте целиком)
+
 name: Build APK
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -34,7 +38,6 @@ jobs:
           export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
           yes | sdkmanager --licenses || true
           sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
-          # Создаем структуру для Buildozer
           mkdir -p $ANDROID_SDK_ROOT/tools/bin
           ln -sf $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager $ANDROID_SDK_ROOT/tools/bin/sdkmanager
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
@@ -55,20 +58,8 @@ jobs:
           export PATH=$PATH:/home/runner/android-sdk/cmdline-tools/latest/bin:/home/runner/android-sdk/tools/bin
           buildozer -v android debug
       
-      - name: Find and Upload APK
-        if: always()
-        run: |
-          echo "=== Searching for APK ==="
-          find /home/runner -name "*.apk" -type f 2>/dev/null || true
-          find $GITHUB_WORKSPACE -name "*.apk" -type f 2>/dev/null || true
-          mkdir -p $GITHUB_WORKSPACE/bin
-          find /home/runner/.buildozer -name "*.apk" -exec cp {} $GITHUB_WORKSPACE/bin/ \; 2>/dev/null || true
-      
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: apk
-          path: |
-            bin/*.apk
-            **/*.apk
+          name: byebye-dpi-apk
+          path: bin/*.apk
