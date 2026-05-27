@@ -1,46 +1,15 @@
-name: Build APK
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
+name: Build
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-      
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libffi-dev libssl-dev
-      
-      - name: Install buildozer
-        run: |
-          pip3 install --user --upgrade buildozer cython
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      
-      - name: Cache buildozer
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.buildozer
-            .buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
-          restore-keys: |
-            ${{ runner.os }}-buildozer-
-      
+      - uses: actions/checkout@v3
       - name: Build APK
-        run: |
-          buildozer -v android debug
-      
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          command: buildozer android debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: byebye-dpi-apk
           path: bin/*.apk
